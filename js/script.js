@@ -1,122 +1,3 @@
-// Datos de películas 
-const moviesData = {
-    featured: [
-        {
-            id: 1,
-            title: "Duna",
-            year: 2021,
-            rating: 8.0,
-            duration: "155 min",
-            genre: "Ciencia Ficción, Aventura",
-            director: "Denis Villeneuve",
-            cast: "Timothée Chalamet, Rebecca Ferguson, Oscar Isaac",
-            classification: "PG-13",
-            description: "Un noble hereda el peligroso planeta desértico Arrakis, la única fuente de la sustancia más valiosa del universo.",
-            poster: "../assets/images/1.jpg",
-            trailer: "Wg86eQkdudI"
-        },
-        {
-            id: 2,
-            title: "Spider-Man: Sin Camino a Casa",
-            year: 2021,
-            rating: 8.2,
-            duration: "148 min",
-            genre: "Acción, Aventura",
-            director: "Jon Watts",
-            cast: "Tom Holland, Zendaya, Benedict Cumberbatch",
-            classification: "PG-13",
-            description: "Peter Parker busca la ayuda del Doctor Strange cuando su identidad secreta como Spider-Man es revelada.",
-            poster: "../assets/images/2.jpg",
-            trailer: "JfVOs4VSpmA"
-        },
-        {
-            id: 3,
-            title: "Top Gun: Maverick",
-            year: 2022,
-            rating: 8.4,
-            duration: "130 min",
-            genre: "Acción, Drama",
-            director: "Joseph Kosinski",
-            cast: "Tom Cruise, Jennifer Connelly, Miles Teller",
-            classification: "PG-13",
-            description: "Después de más de treinta años de servicio, Maverick es instructor de pilotos y debe enfrentar su pasado.",
-            poster: "../assets/images/3.jpg",
-            trailer: "qSqVVswa420"
-        },
-        {
-            id: 4,
-            title: "The Batman",
-            year: 2022,
-            rating: 7.9,
-            duration: "176 min",
-            genre: "Acción, Crimen, Drama",
-            director: "Matt Reeves",
-            cast: "Robert Pattinson, Zoë Kravitz, Jeffrey Wright",
-            classification: "PG-13",
-            description: "Batman investiga la corrupción en Gotham City mientras persigue al Enigma, un asesino en serie que se dirige a la élite de Gotham.",
-            poster: "../assets/images/4.jpg",
-            trailer: "mqqft2x_Aa4"
-        }
-    ],
-    newReleases: [
-        {
-            id: 5,
-            title: "Jurassic World: Dominion",
-            year: 2022,
-            rating: 5.7,
-            duration: "147 min",
-            genre: "Acción, Aventura",
-            director: "Colin Trevorrow",
-            cast: "Chris Pratt, Bryce Dallas Howard, Sam Neill",
-            classification: "PG-13",
-            description: "Cuatro años después de la destrucción de Isla Nublar, los dinosaurios ahora conviven con los humanos en todo el mundo.",
-            poster: "../assets/images/5.jpg",
-            trailer: "fb5ELWi-ekk"
-        },
-        {
-            id: 6,
-            title: "Doctor Strange en el Multiverso de la Locura",
-            year: 2022,
-            rating: 7.0,
-            duration: "126 min",
-            genre: "Acción, Aventura, Fantasía",
-            director: "Sam Raimi",
-            cast: "Benedict Cumberbatch, Elizabeth Olsen, Chiwetel Ejiofor",
-            classification: "PG-13",
-            description: "El Dr. Strange viaja a lo desconocido con la ayuda de aliados místicos y antiguos y nuevos para enfrentar a un nuevo adversario misterioso.",
-            poster: "../assets/images/6.jpeg",
-            trailer: "aWzlQ2N6qqg"
-        },
-        {
-            id: 7,
-            title: "Black Panther: Wakanda Forever",
-            year: 2022,
-            rating: 7.2,
-            duration: "161 min",
-            genre: "Acción, Aventura",
-            director: "Ryan Coogler",
-            cast: "Letitia Wright, Lupita Nyong'o, Danai Gurira",
-            classification: "PG-13",
-            description: "El pueblo de Wakanda lucha para proteger su nación de las potencias mundiales que intervienen después de la muerte del rey T'Challa.",
-            poster: "../assets/images/7.jpg",
-            trailer: "RlOB3UALvrQ"
-        },
-        {
-            id: 8,
-            title: "Avatar: El Camino del Agua",
-            year: 2022,
-            rating: 7.8,
-            duration: "192 min",
-            genre: "Acción, Aventura, Fantasía",
-            director: "James Cameron",
-            cast: "Sam Worthington, Zoe Saldana, Sigourney Weaver",
-            classification: "PG-13",
-            description: "Jake Sully vive con su nueva familia en el planeta Pandora. Cuando una amenaza familiar regresa, Jake debe trabajar con Neytiri para proteger su hogar.",
-            poster: "../assets/images/8.jpg",
-            trailer: "d9MyW72ELq0"
-        }
-    ]
-};
 
 // Elementos del DOM
 const hamburger = document.querySelector('.hamburger');
@@ -132,24 +13,66 @@ hamburger.addEventListener('click', () => {
     navLinks.classList.toggle('active');
 });
 
+
+
+const getPeliculasDestacadas = async () => {
+    try {
+        const response = await fetch('http://localhost:3000/api/peliculas/recomendadas');
+        if (!response.ok) {
+            throw new Error(`Error en la petición: ${response.status} ${response.statusText}`)
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error al obtener películas destacadas:', error);
+    };
+};
+
+const getPeliculasLanzamientos = async () => {
+    try {
+        const response = await fetch('http://localhost:3000/api/peliculas/lanzamientos');
+        if (!response.ok) {
+            throw new Error(`Error en la petición: ${response.status} ${response.statusText}`)
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error al obtener películas destacadas:', error);
+    };
+};
+
 // Cargar películas en las secciones
-function loadMovies() {
+async function loadMovies() {
+    const peliDestacadas = await getPeliculasDestacadas();
+    const peliLanzamientos = await getPeliculasLanzamientos();
     // Películas destacadas
-    moviesData.featured.forEach(movie => {
+    peliDestacadas.forEach(movie => {
         featuredMoviesContainer.appendChild(createMovieCard(movie));
     });
 
     // Nuevos lanzamientos
-    moviesData.newReleases.forEach(movie => {
+    peliLanzamientos.lanzamientos.forEach(movie => {
         newReleasesContainer.appendChild(createMovieCard(movie));
     });
 
+    // Sacar ID del la URL del trailer para reproducirlo
+    function getYouTubeId(url) {
+        // Soporta URLs como https://www.youtube.com/watch?v=ID o https://youtu.be/ID
+        const regExp = /(?:youtube\.com\/.*v=|youtu\.be\/)([^&?/]+)/;
+        const match = url.match(regExp);
+        return match ? match[1] : url; // Si no es URL, asume que ya es el ID
+    }
+
     // Configurar eventos para los botones de tráiler
     document.querySelectorAll('.play-trailer').forEach(button => {
+        debugger;
         button.addEventListener('click', (e) => {
-            const videoId = e.target.getAttribute('data-id') || e.target.parentElement.getAttribute('data-id');
-            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
-            
+            debugger;
+            const rawId = e.target.getAttribute('data-id') || e.target.parentElement.getAttribute('data-id');
+            const videoId = getYouTubeId(rawId);
+            console.log(videoId);
+            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+
             // Desplazar hasta el reproductor
             document.querySelector('.player-section').scrollIntoView({
                 behavior: 'smooth'
@@ -158,30 +81,86 @@ function loadMovies() {
     });
 }
 
+// Función para generar estrellas según la calificación (0-10)
+function getStars(rating) {
+    const starsTotal = 5;
+    const filledStars = Math.round((rating / 10) * starsTotal);
+    let starsHtml = '';
+    for (let i = 1; i <= starsTotal; i++) {
+        starsHtml += i <= filledStars
+            ? '<i class="fas fa-star" style="color:gold"></i>'
+            : '<i class="far fa-star" style="color:gold"></i>';
+    }
+    return starsHtml;
+}
+
 // Crear tarjeta de película
 function createMovieCard(movie) {
     const card = document.createElement('div');
     card.className = 'movie-card fade-in';
     card.innerHTML = `
         <div class="movie-poster">
-            <img src="${movie.poster}" alt="${movie.title}">
+            <img src="${movie.poster_url}" alt="${movie.titulo_espanol}">
             <div class="card-overlay">
-                <button class="play-trailer" data-id="${movie.trailer}"><i class="fas fa-play"></i> Ver Tráiler</button>
-                <button><i class="fas fa-info-circle"></i> Más información</button>
+                <button class="play-trailer" data-id="${movie.trailer_url}"><i class="fas fa-play"></i> Ver Tráiler</button>
+                <button class="more-info" data-movie='${JSON.stringify(movie).replace(/'/g, "&apos;")}'><i class="fas fa-info-circle"></i> Más información</button>
             </div>
         </div>
         <div class="card-info">
-            <h3>${movie.title}</h3>
-            <p>${movie.description}</p>
+            <h3>${movie.titulo_espanol}</h3>
             <div class="movie-meta">
-                <span>${movie.year}</span>
-                <span>${movie.classification}</span>
-                <span class="rating">${movie.rating}/10</span>
+                <span class="rating">${getStars(movie.calificacion)} ${movie.calificacion}/10</span>
             </div>
         </div>
     `;
     return card;
 }
+
+// Mostrar modal con información detallada
+document.addEventListener('click', function (e) {
+    if (e.target.closest('.more-info')) {
+        const btn = e.target.closest('.more-info');
+        const movie = JSON.parse(btn.getAttribute('data-movie').replace(/&apos;/g, "'"));
+        showMovieModal(movie);
+    }
+    if (e.target.classList.contains('close-modal') || e.target.classList.contains('modal')) {
+        closeMovieModal();
+    }
+});
+
+function showMovieModal(movie) {
+    const modal = document.getElementById('movie-modal');
+    const details = document.getElementById('modal-details');
+    details.innerHTML = `
+        <img src="${movie.poster_url}" alt="${movie.titulo_espanol}">
+        <h2>${movie.titulo_espanol}</h2>
+        <div class="movie-meta">
+            <span><i class="fas fa-calendar"></i> ${movie.fecha_estreno || ''}</span>
+            <span><i class="fas fa-star"></i> ${movie.calificacion}/10</span>
+            <span><i class="fas fa-film"></i> ${(movie.generos || []).map(g => g.nombre).join(', ')}</span>
+        </div>
+        <p>${movie.descripcion || 'Sinopsis no disponible.'}</p>
+        <div class="movie-meta">
+            <span><strong>Director:</strong> ${movie.director || 'Desconocido'}</span>
+        </div>
+        <div class="movie-meta">
+            <span><strong>Reparto:</strong> ${(movie.reparto || []).join(', ')}</span>
+        </div>
+        <div class="movie-meta">
+            <span><strong>Clasificación:</strong> ${movie.clasificacion || 'N/A'}</span>
+        </div>
+    `;
+    modal.style.display = 'block';
+};
+
+function closeMovieModal() {
+    document.getElementById('movie-modal').style.display = 'none';
+}
+
+// Cerrar modal con ESC
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeMovieModal();
+});
 
 // Búsqueda de películas
 searchButton.addEventListener('click', () => {
