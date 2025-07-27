@@ -1,0 +1,142 @@
+:root {
+  --primary: #ff6600;
+  --primary-dark: #e65c00;
+  --dark: #0a0a0a;
+  --darker: #050505;
+  --light: #f5f5f5;
+  --gray: #333333;
+  --light-gray: #aaaaaa;
+  --transition: all 0.3s ease;
+  --shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--darker);
+  color: var(--light);
+  line-height: 1.6;
+  padding: 2rem;
+}
+
+h2, h3 {
+  font-family: 'Oswald', sans-serif;
+  color: var(--primary);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.form-section {
+  background-color: var(--gray);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 2rem;
+}
+
+form label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+form input,
+form textarea,
+form select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 0.25rem;
+  background-color: #222;
+  border: none;
+  border-radius: 4px;
+  color: var(--light);
+  font-size: 1rem;
+}
+
+form input:focus,
+form textarea:focus,
+form select:focus {
+  outline: 2px solid var(--primary);
+}
+
+button {
+  margin-top: 1rem;
+  background: var(--primary);
+  color: var(--darker);
+  border: none;
+  padding: 10px 16px;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: var(--transition);
+}
+
+button:hover {
+  background: var(--primary-dark);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.item-list {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.item-list .item {
+  background: #222;
+  padding: 6px 10px;
+  margin: 4px 0;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.tabla-responsive {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--gray);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #222;
+  text-align: left;
+}
+
+th {
+  background: var(--dark);
+  color: var(--primary);
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+}
+
+td img {
+  max-width: 100px;
+  border-radius: 4px;
+}
+
+.mensaje {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: var(--primary);
+}
