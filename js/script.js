@@ -116,7 +116,7 @@ function createMovieCard(movie) {
     return card;
 }
 
-// Mostrar modal con información detallada
+// Mostrar modal con información detallada --------------
 document.addEventListener('click', function (e) {
     if (e.target.closest('.more-info')) {
         const btn = e.target.closest('.more-info');
