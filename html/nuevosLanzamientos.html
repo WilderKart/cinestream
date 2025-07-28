@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineStream - Tu plataforma de streaming</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/nuevosLanzamientos.css">
+</head>
+<body>
+    <!-- Header con navegación -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">REEL<span>STROM</span></a>
+                
+                <ul class="nav-links">
+                    <li><a href="../index.html">Inicio</a></li>
+                    <li><a href="peliculasCartelera.html">Películas en cartelera</a></li>
+                    <li><a href="nuevosLanzamientos.html">Próximos lanzamientos</a></li>
+                    <li><a href="#">Género</a></li>
+                    <li><a href="#">Clasificación</a></li>
+                </ul>
+                
+                <div class="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Barra de búsqueda -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Buscar películas por nombre, género, año...">
+                <button id="search-button"><i class="fas fa-search"></i> Buscar</button>
+            </div>
+        </div>
+    </section>
+    <!-- Sección de nuevos lanzamientos -->
+    <div class="movies-grid" id="new-releases">
+        <!-- Películas se cargarán aquí -->
+    </div>
+<script src="../js/nuevosLanzamientos.js"></script>
+</body>

@@ -8,6 +8,71 @@ const youtubePlayer = document.getElementById('youtube-player');
 const featuredMoviesContainer = document.getElementById('featured-movies');
 const newReleasesContainer = document.getElementById('new-releases');
 
+// Reproductor principal
+// Aquí se cargará dinámicamente la película aleatoria
+const API_ALEATORIA = "http://localhost:3000/api/peliculas/aleatoria";
+
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const res = await fetch(API_ALEATORIA);
+    const pelicula = await res.json();
+
+    // Obtener ID de YouTube
+    const trailerUrl = new URL(pelicula.trailer_url);
+    const videoId = trailerUrl.searchParams.get("v");
+
+    if (!videoId) {
+      console.warn("No se pudo obtener el ID del video de YouTube");
+      return;
+    }
+
+    // Convertir arrays a strings legibles
+    const actores = pelicula.actores.map(a => a.nombre).join(", ");
+    const directores = pelicula.directores.map(d => d.nombre).join(", ");
+    const companias = pelicula.companias.map(c => c.nombre).join(", ");
+    const generos = pelicula.generos.map(g => g.nombre).join(", ");
+    const idiomas = pelicula.idiomas.map(i => i.nombre).join(", ");
+
+    // Contenedor donde se inyectará el HTML
+    const contenedor = document.getElementById("pelicula-aleatoria-container");
+
+    contenedor.innerHTML = `
+      <div class="video-container">
+        <iframe
+          id="youtube-player"
+          src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0&controls=1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+      
+      <div class="movie-info">
+        <div>
+          <h3>${pelicula.titulo_espanol}</h3>
+          <div class="movie-meta">
+            <span><i class="fas fa-calendar"></i> ${new Date(pelicula.fecha_estreno).getFullYear()}</span>
+            <span><i class="fas fa-clock"></i> ${pelicula.duracion_minutos} min</span>
+            <span><i class="fas fa-star"></i> ${pelicula.calificacion}/10</span>
+          </div>
+          <p>${pelicula.sinopsis}</p>
+        </div>
+        
+        <div class="movie-details">
+          <h4>Detalles</h4>
+          <div class="movie-meta"><strong>Género:</strong> ${generos}</div>
+          <div class="movie-meta"><strong>Director:</strong> ${directores}</div>
+          <div class="movie-meta"><strong>Reparto:</strong> ${actores}</div>
+          <div class="movie-meta"><strong>Idiomas:</strong> ${idiomas}</div>
+          <div class="movie-meta"><strong>Compañías:</strong> ${companias}</div>
+          <div class="movie-meta"><strong>Clasificación:</strong> ${pelicula.clasificacion || "No especificada"}</div>
+          <div class="movie-meta"><strong>País de estreno:</strong> ${pelicula.pais_estreno}</div>
+        </div>
+      </div>
+    `;
+  } catch (err) {
+    console.error("Error al cargar película aleatoria:", err);
+  }
+});
 // Menú hamburguesa para móviles
 hamburger.addEventListener('click', () => {
     navLinks.classList.toggle('active');

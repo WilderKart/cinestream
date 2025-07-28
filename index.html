@@ -20,12 +20,11 @@
                 <a href="#" class="logo">CINE<span>STREAM</span></a>
 
                 <ul class="nav-links">
-                    <li><a href="#">Inicio</a></li>
-                    <li><a href="#">Películas en cartelera</a></li>
-                    <li><a href="#">Próximos lanzamientos</a></li>
-                    <li><a href="#">Por género</a></li>
-                    <li><a href="#">Por clasificación</a></li>
-                    <li><a href="#">Por año</a></li>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="html/peliculasCartelera.html">Películas en cartelera</a></li>
+                    <li><a href="html/nuevosLanzamientos.html">Próximos lanzamientos</a></li>
+                    <li><a href="#">Género</a></li>
+                    <li><a href="#">Clasificación</a></li>
                 </ul>
 
                 <div class="hamburger">
@@ -46,43 +45,9 @@
     </section>
 
     <!-- Reproductor principal -->
-    <section class="player-section">
-        <div class="container">
-            <div class="video-container">
-                <iframe id="youtube-player" src="https://www.youtube.com/embed/d9MyW72ELq0?autoplay=1&mute=1"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen></iframe>
-            </div>
-
-            <div class="movie-info">
-                <div>
-                    <h3>Avengers: Endgame</h3>
-                    <div class="movie-meta">
-                        <span><i class="fas fa-calendar"></i> 2019</span>
-                        <span><i class="fas fa-clock"></i> 181 min</span>
-                        <span><i class="fas fa-star"></i> 8.4/10</span>
-                    </div>
-                    <p>Después de los devastadores eventos de Avengers: Infinity War, el universo está en ruinas. Con la
-                        ayuda de los aliados restantes, los Vengadores se reúnen una vez más para revertir las acciones
-                        de Thanos y restaurar el orden en el universo.</p>
-                </div>
-
-                <div>
-                    <h4>Detalles</h4>
-                    <div class="movie-meta">
-                        <span><strong>Género:</strong> Acción, Aventura, Ciencia Ficción</span>
-                    </div>
-                    <div class="movie-meta">
-                        <span><strong>Director:</strong> Anthony Russo, Joe Russo</span>
-                    </div>
-                    <div class="movie-meta">
-                        <span><strong>Reparto:</strong> Robert Downey Jr., Chris Evans, Mark Ruffalo</span>
-                    </div>
-                    <div class="movie-meta">
-                        <span><strong>Clasificación:</strong> PG-13</span>
-                    </div>
-                </div>
-            </div>
+     <section class="player-section">
+        <div class="container" id="pelicula-aleatoria-container">
+            <!-- Aquí se cargará dinámicamente la película -->
         </div>
     </section>
 
@@ -93,7 +58,7 @@
                 <h2>Destacadas hoy</h2>
                 <a href="#" class="btn">Ver todas</a>
             </div>
-
+            
             <div class="movies-grid" id="featured-movies">
                 <!-- Películas se cargarán dinámicamente con JavaScript -->
             </div>
