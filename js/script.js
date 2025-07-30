@@ -10,7 +10,7 @@ const newReleasesContainer = document.getElementById('new-releases');
 
 // Reproductor principal
 // Aquí se cargará dinámicamente la película aleatoria
-const API_ALEATORIA = "http://localhost:3000/api/peliculas/aleatoria";
+const API_ALEATORIA = "https://cinestream-backend.onrender.com/api/peliculas/aleatoria";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -82,7 +82,7 @@ hamburger.addEventListener('click', () => {
 
 const getPeliculasDestacadas = async () => {
     try {
-        const response = await fetch('http://localhost:3000/api/peliculas/recomendadas');
+        const response = await fetch('https://cinestream-backend.onrender.com/api/peliculas/recomendadas');
         if (!response.ok) {
             throw new Error(`Error en la petición: ${response.status} ${response.statusText}`)
         }
@@ -95,7 +95,7 @@ const getPeliculasDestacadas = async () => {
 
 const getPeliculasLanzamientos = async () => {
     try {
-        const response = await fetch('http://localhost:3000/api/peliculas/lanzamientos');
+        const response = await fetch('https://cinestream-backend.onrender.com/api/peliculas/lanzamientos');
         if (!response.ok) {
             throw new Error(`Error en la petición: ${response.status} ${response.statusText}`)
         }
