@@ -1,17 +1,23 @@
+/* ==============================
+   🎨 Variables Globales y Reset
+   ============================== */
 :root {
-  --bg-dark: #0a0a0a; /* reemplaza #121212 */
-  --bg-darker: #050505; /* reemplaza #1e1e1e */
-  --bg-card: #333333; /* reemplaza #2d2d2d con --gray */
-  --primary: #ff6600; /* reemplaza #bb86fc */
-  --primary-dark: #e65c00; /* reemplaza #3700b3 */
-  --secondary: #aaaaaa; /* reemplaza #03dac6 con --light-gray */
-  --text: #f5f5f5; /* reemplaza #e1e1e1 con --light */
-  --text-secondary: #aaaaaa; /* reemplaza #a0a0a0 con --light-gray */
-  --error: #cf6679; /* mantenido igual, no se especificó nuevo valor */
-  --success: #4caf50; /* mantenido igual, no se especificó nuevo valor */
-  --transition: all 0.3s ease; /* agregado nuevo */
-  --shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* agregado nuevo */
-  --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* agregado nuevo */
+  --bg-dark: #0a0a0a; /* Fondo principal */
+  --bg-darker: #050505; /* Fondo secundario */
+  --bg-card: #333333; /* Fondo de tarjetas */
+
+  --primary: #ff6600; /* Color de acento */
+  --primary-dark: #e65c00; /* Hover/acento oscuro */
+  --secondary: #aaaaaa; /* Texto secundario */
+  --text: #f5f5f5; /* Texto principal */
+  --text-secondary: #aaaaaa; /* Texto menos importante */
+
+  --error: #cf6679; /* Indicador de error */
+  --success: #4caf50; /* Indicador de éxito */
+
+  --transition: all 0.3s ease; /* Transiciones suaves */
+  --shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Sombra fuerte */
+  --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Sombra de tarjetas */
 }
 
 * {
@@ -26,6 +32,7 @@ body {
   color: var(--text);
   padding: 20px;
   line-height: 1.6;
+  transition: var(--transition);
 }
 
 .container {
@@ -34,20 +41,20 @@ body {
   padding: 0 20px;
 }
 
-h1,
-h2,
-h3 {
+h1, h2, h3 {
   color: var(--primary);
   margin-bottom: 20px;
 }
 
-/* Formulario principal */
+/* ==============================
+   📝 Formularios
+   ============================== */
 .form-section {
   background-color: var(--bg-darker);
   padding: 25px;
   border-radius: 10px;
   margin-bottom: 30px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--card-shadow);
 }
 
 .form-group {
@@ -57,6 +64,7 @@ h3 {
 .flex-container {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .flex-container .form-group {
@@ -70,9 +78,7 @@ label {
   font-weight: 500;
 }
 
-input,
-select,
-textarea {
+input, select, textarea {
   width: 100%;
   padding: 12px;
   background-color: var(--bg-card);
@@ -83,13 +89,15 @@ textarea {
   transition: border 0.3s;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
+input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.3);
 }
 
+/* ==============================
+   🔘 Botones
+   ============================== */
 button {
   background-color: var(--primary);
   color: #000;
@@ -98,17 +106,26 @@ button {
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
-  transition: all 0.3s;
+  transition: var(--transition);
+  box-shadow: var(--card-shadow);
+   margin-bottom: 20px; 
 }
 
 button:hover {
   background-color: var(--primary-dark);
   color: white;
+  transform: translateY(-2px);
 }
 
 button.secondary {
   background-color: var(--secondary);
   color: #000;
+  transition: var(--transition);
+}
+
+button.secondary:hover {
+  background-color: var(--primary-dark); /* Naranja hover */
+  color: white;
 }
 
 button.danger {
@@ -119,9 +136,19 @@ button.danger {
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* Grid de películas */
+/* Botones Gestionar - estilo hover naranja */
+button.gestionar:hover {
+  background-color: var(--primary-dark);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* ==============================
+   🎞️ Tarjetas de Películas
+   ============================== */
 .movies-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -136,11 +163,12 @@ button:disabled {
   transition: transform 0.3s, box-shadow 0.3s;
   position: relative;
   cursor: pointer;
+  box-shadow: var(--card-shadow);
 }
 
 .movie-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow);
 }
 
 .movie-card img {
@@ -183,14 +211,14 @@ button:disabled {
   font-size: 12px;
 }
 
-/* Modales */
+/* ==============================
+   🪟 Modales
+   ============================== */
 .modal {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 1000;
   justify-content: center;
@@ -206,6 +234,7 @@ button:disabled {
   border-radius: 10px;
   padding: 25px;
   position: relative;
+  box-shadow: var(--shadow);
 }
 
 .close-modal {
@@ -215,13 +244,16 @@ button:disabled {
   font-size: 24px;
   cursor: pointer;
   color: var(--text-secondary);
+  transition: var(--transition);
 }
 
 .close-modal:hover {
   color: var(--text);
 }
 
-/* Listas de relaciones */
+/* ==============================
+   👥 Relación entre Entidades
+   ============================== */
 .relations-list {
   margin-top: 15px;
   display: flex;
@@ -253,9 +285,12 @@ button:disabled {
   padding: 0;
   margin-left: 5px;
   font-size: 16px;
+  cursor: pointer;
 }
 
-/* Vista previa de imágenes */
+/* ==============================
+   🖼️ Vista Previa de Imágenes
+   ============================== */
 .image-preview {
   max-width: 200px;
   max-height: 200px;
@@ -268,7 +303,9 @@ button:disabled {
   display: block;
 }
 
-/* Mensajes */
+/* ==============================
+   📢 Mensajes y Estados
+   ============================== */
 .mensaje {
   padding: 10px;
   border-radius: 5px;
@@ -294,7 +331,9 @@ button:disabled {
   padding: 20px;
 }
 
-/* Responsive */
+/* ==============================
+   📱 Responsive Design
+   ============================== */
 @media (max-width: 768px) {
   .flex-container {
     flex-direction: column;
@@ -302,5 +341,9 @@ button:disabled {
 
   .movie-actions {
     display: flex;
+  }
+
+  .movie-card img {
+    height: 250px;
   }
 }

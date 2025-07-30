@@ -10,10 +10,8 @@
     <div class="container">
       <h1>Gestión de Películas</h1>
 
-      <!-- Mensaje global -->
       <div id="mensajeGlobal" class="mensaje"></div>
 
-      <!-- Formulario principal -->
       <div class="form-section">
         <h2 id="formTitle">Agregar Película</h2>
         <form id="formPelicula">
@@ -68,49 +66,29 @@
           <div class="form-group">
             <label for="poster_url">URL Poster:</label>
             <input type="url" id="poster_url" />
-            <img id="posterPreview" class="image-preview" />
+            <img id="posterPreview" class="image-preview" alt="Vista previa del póster" />
           </div>
 
-          <!-- Botones para gestionar relaciones -->
-          <div class="flex-container" style="margin-top: 20px; gap: 10px">
-            <button
-              type="button"
-              class="secondary"
-              onclick="abrirModal('actorModal')"
-            >
+          <!-- Botones Gestionar -->
+          <div class="flex-container gestionar-botones">
+            <button type="button" class="secondary gestionar" onclick="abrirModal('actorModal')">
               Gestionar Actores
             </button>
-            <button
-              type="button"
-              class="secondary"
-              onclick="abrirModal('directorModal')"
-            >
+            <button type="button" class="secondary gestionar" onclick="abrirModal('directorModal')">
               Gestionar Directores
             </button>
-            <button
-              type="button"
-              class="secondary"
-              onclick="abrirModal('companiaModal')"
-            >
+            <button type="button" class="secondary gestionar" onclick="abrirModal('companiaModal')">
               Gestionar Compañías
             </button>
-            <button
-              type="button"
-              class="secondary"
-              onclick="abrirModal('generoModal')"
-            >
+            <button type="button" class="secondary gestionar" onclick="abrirModal('generoModal')">
               Gestionar Géneros
             </button>
-            <button
-              type="button"
-              class="secondary"
-              onclick="abrirModal('idiomaModal')"
-            >
+            <button type="button" class="secondary gestionar" onclick="abrirModal('idiomaModal')">
               Gestionar Idiomas
             </button>
           </div>
 
-          <!-- Listas de elementos seleccionados -->
+          <!-- Relaciones -->
           <div id="relacionesSeleccionadas">
             <h3>Actores Seleccionados</h3>
             <div id="actoresSeleccionados" class="relations-list"></div>
@@ -128,17 +106,12 @@
             <div id="idiomasSeleccionados" class="relations-list"></div>
           </div>
 
-          <button type="submit" style="margin-top: 30px">
-            Guardar Película
-          </button>
-          <button
-            type="button"
-            onclick="limpiarFormulario()"
-            class="secondary"
-            style="margin-left: 10px"
-          >
-            Limpiar
-          </button>
+          <div class="form-buttons">
+            <button type="submit">Guardar Película</button>
+            <button type="button" onclick="limpiarFormulario()" class="secondary limpiar">
+              Limpiar
+            </button>
+          </div>
         </form>
       </div>
 
@@ -149,113 +122,81 @@
       </div>
     </div>
 
-    <!-- Modal para Actores -->
+    <!-- Modales -->
     <div id="actorModal" class="modal">
       <div class="modal-content">
-        <span class="close-modal" onclick="cerrarModal('actorModal')"
-          >&times;</span
-        >
+        <span class="close-modal" onclick="cerrarModal('actorModal')">&times;</span>
         <h2>Gestionar Actores</h2>
-
         <div class="form-group">
           <label for="selectActor">Seleccionar Actor:</label>
           <select id="selectActor">
             <option value="">Cargando actores...</option>
           </select>
         </div>
-
         <div class="form-group">
           <label for="personaje">Personaje:</label>
-          <input
-            type="text"
-            id="personaje"
-            placeholder="Nombre del personaje (opcional)"
-          />
+          <input type="text" id="personaje" placeholder="Nombre del personaje (opcional)" />
         </div>
-
         <button type="button" onclick="agregarActor()">Agregar Actor</button>
       </div>
     </div>
 
-    <!-- Modal para Directores -->
     <div id="directorModal" class="modal">
       <div class="modal-content">
-        <span class="close-modal" onclick="cerrarModal('directorModal')"
-          >&times;</span
-        >
+        <span class="close-modal" onclick="cerrarModal('directorModal')">&times;</span>
         <h2>Gestionar Directores</h2>
-
         <div class="form-group">
           <label for="selectDirector">Seleccionar Director:</label>
           <select id="selectDirector">
             <option value="">Cargando directores...</option>
           </select>
         </div>
-
-        <button type="button" onclick="agregarDirector()">
-          Agregar Director
-        </button>
+        <button type="button" onclick="agregarDirector()">Agregar Director</button>
       </div>
     </div>
 
-    <!-- Modal para Compañías -->
     <div id="companiaModal" class="modal">
       <div class="modal-content">
-        <span class="close-modal" onclick="cerrarModal('companiaModal')"
-          >&times;</span
-        >
+        <span class="close-modal" onclick="cerrarModal('companiaModal')">&times;</span>
         <h2>Gestionar Compañías</h2>
-
         <div class="form-group">
           <label for="selectCompania">Seleccionar Compañía:</label>
           <select id="selectCompania">
             <option value="">Cargando compañías...</option>
           </select>
         </div>
-
-        <button type="button" onclick="agregarCompania()">
-          Agregar Compañía
-        </button>
+        <button type="button" onclick="agregarCompania()">Agregar Compañía</button>
       </div>
     </div>
 
-    <!-- Modal para Géneros -->
     <div id="generoModal" class="modal">
       <div class="modal-content">
-        <span class="close-modal" onclick="cerrarModal('generoModal')"
-          >&times;</span
-        >
+        <span class="close-modal" onclick="cerrarModal('generoModal')">&times;</span>
         <h2>Gestionar Géneros</h2>
-
         <div class="form-group">
           <label for="selectGenero">Seleccionar Género:</label>
           <select id="selectGenero">
             <option value="">Cargando géneros...</option>
           </select>
         </div>
-
         <button type="button" onclick="agregarGenero()">Agregar Género</button>
       </div>
     </div>
 
-    <!-- Modal para Idiomas -->
     <div id="idiomaModal" class="modal">
       <div class="modal-content">
-        <span class="close-modal" onclick="cerrarModal('idiomaModal')"
-          >&times;</span
-        >
+        <span class="close-modal" onclick="cerrarModal('idiomaModal')">&times;</span>
         <h2>Gestionar Idiomas</h2>
-
         <div class="form-group">
           <label for="selectIdioma">Seleccionar Idioma:</label>
           <select id="selectIdioma">
             <option value="">Cargando idiomas...</option>
           </select>
         </div>
-
         <button type="button" onclick="agregarIdioma()">Agregar Idioma</button>
       </div>
     </div>
+
     <script src="../js/crud_peliculas.js"></script>
   </body>
 </html>
