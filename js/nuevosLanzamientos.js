@@ -73,13 +73,28 @@ async function loadFeaturedMovies() {
     if (loader) loader.style.display = "flex";
     featuredMoviesContainer.style.display = "none";
 
-    const response = await fetch(apiLanzamientos);
-    if (!response.ok) throw new Error("No se pudo obtener los lanzamientos");
-    const data = await response.json();
+    const cached = localStorage.getItem("lanzamientosCache");
+    const cachedTime = localStorage.getItem("lanzamientosCacheTime");
+    const now = Date.now();
 
-    cacheNuevosLanzamientos = data.lanzamientos;
+    if (cached && cachedTime && (now - cachedTime) < 5 * 60 * 1000) {
+      // Usar caché si tiene menos de 5 minutos
+      cacheNuevosLanzamientos = JSON.parse(cached);
+      mostrarPeliculas(cacheNuevosLanzamientos);
+    } else {
+      // Obtener desde la API
+      const response = await fetch(apiLanzamientos);
+      if (!response.ok) throw new Error("No se pudo obtener los lanzamientos");
+      const data = await response.json();
 
-    mostrarPeliculas(cacheNuevosLanzamientos);
+      cacheNuevosLanzamientos = data.lanzamientos;
+
+      // Guardar en localStorage
+      localStorage.setItem("lanzamientosCache", JSON.stringify(cacheNuevosLanzamientos));
+      localStorage.setItem("lanzamientosCacheTime", now.toString());
+
+      mostrarPeliculas(cacheNuevosLanzamientos);
+    }
 
     if (loader) loader.style.display = "none";
     featuredMoviesContainer.style.display = "grid";
@@ -88,16 +103,30 @@ async function loadFeaturedMovies() {
     if (loader) loader.style.display = "none";
     featuredMoviesContainer.style.display = "block";
     featuredMoviesContainer.innerHTML = "<p>Error al cargar las películas.</p>";
-    console.error(error);
+    console.error("Error al cargar los lanzamientos:", error);
   }
 }
+
 
 function filtrarLanzamientos() {
   const searchTerm = searchInput.value.trim().toLowerCase();
 
-  const filtradas = cacheNuevosLanzamientos.filter(pelicula =>
-    pelicula.titulo_espanol.toLowerCase().includes(searchTerm)
-  );
+  if (!searchTerm) {
+    mostrarPeliculas(cacheNuevosLanzamientos);
+    return;
+  }
+
+  const filtradas = cacheNuevosLanzamientos.filter(pelicula => {
+    const titulo = pelicula.titulo_espanol.toLowerCase();
+    const generos = pelicula.generos.map(g => g.nombre.toLowerCase()).join(", ");
+    const anio = new Date(pelicula.fecha_estreno).getFullYear().toString();
+
+    return (
+      titulo.includes(searchTerm) ||
+      generos.includes(searchTerm) ||
+      anio.includes(searchTerm)
+    );
+  });
 
   mostrarPeliculas(filtradas);
 }
