@@ -125,25 +125,7 @@ header {
   padding: 15px 0;
 }
 
-/* Centrar el menú de navegación */
-.nav-links {
-  display: flex;
-  justify-content: center;
-  flex-grow: 1;
-  gap: 5px;
-  list-style: none;
-}
 
-.nav-links li a {
-  color: var(--light);
-  font-weight: 600;
-  padding: 8px 12px;
-  transition: var(--transition);
-}
-
-.nav-links li a:hover {
-  color: var(--primary);
-}
 
 /* Botón Admin al extremo derecho */
 /* Botón admin estilo base */
@@ -194,17 +176,7 @@ header {
     justify-content: center;
   }
 
-  .nav-links {
-    flex-direction: column;
-    align-items: center;
-    background: var(--dark);
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    display: none;
-  }
-
+ 
   .hamburger {
     display: block;
     cursor: pointer;
@@ -235,29 +207,7 @@ header {
   color: var(--light);
 }
 
-.nav-links li {
-  margin-left: 25px;
-}
 
-.nav-links a {
-  position: relative;
-  padding: 5px 0;
-}
-
-.nav-links a::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--primary);
-  transition: var(--transition);
-}
-
-.nav-links a:hover::after {
-  width: 100%;
-}
 
 .hamburger {
   display: none;
@@ -524,32 +474,51 @@ footer {
   }
 }
 
+.nav-links {
+    display: flex;
+    list-style: none;
+}
+
+.nav-links li a {
+    color: var(--light);
+    font-weight: 600;
+    padding: 8px 12px;
+    transition: var(--transition);
+}
+
+.nav-links li a:hover {
+    color: var(--primary);
+}
+
+.nav-links li {
+    margin-left: 25px;
+}
+
+.nav-links a {
+    position: relative;
+    padding: 5px 0;
+}
+
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: var(--transition);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+
 @media (max-width: 768px) {
   .hamburger {
     display: block;
   }
-
-  .nav-links {
-    position: absolute;
-    top: 70px;
-    left: 0;
-    background: var(--dark);
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 0;
-    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-    transition: var(--transition);
-  }
-
-  .nav-links.active {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  }
-
-  .nav-links li {
-    margin: 15px 0;
-  }
-
   .movie-info {
     grid-template-columns: 1fr;
   }

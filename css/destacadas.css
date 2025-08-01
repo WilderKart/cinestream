@@ -334,6 +334,33 @@ header {
     font-weight: bold;
 }
 
+
+/* Botón admin estilo base */
+.admin-button-container {
+  margin-left: auto;
+}
+
+.btn-admin {
+  background-color: var(--primary);
+  color: var(--darker);
+  padding: 10px 20px;
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: var(--transition);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-admin:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .movies-grid {
