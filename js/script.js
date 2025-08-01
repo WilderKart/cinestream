@@ -7,39 +7,43 @@ const youtubePlayer = document.getElementById("youtube-player");
 const featuredMoviesContainer = document.getElementById("featured-movies");
 const newReleasesContainer = document.getElementById("new-releases");
 
+// Secciones del DOM que se van a mostrar/ocultar
+const secciones = document.querySelectorAll(".movies-section");
+const seccionTodas = secciones[2]; // Tercera sección es "Todas"
+const seccionReproductor = document.querySelector(".player-section");
+
+let cacheTodasLasPeliculas = []; // Aquí guardaremos todas las películas al inicio
+
 // Reproductor principal
 // Aquí se cargará dinámicamente la película aleatoria
 const API_ALEATORIA =
   "https://cinestream-backend.onrender.com/api/peliculas/aleatoria";
 
-document.addEventListener("DOMContentLoaded", async () => {
+//cargarPeliculaAleatoria
+async function cargarPeliculaAleatoria() {
   try {
     const res = await fetch(API_ALEATORIA);
     const pelicula = await res.json();
 
-    // Obtener ID de YouTube
     const trailerUrl = new URL(pelicula.trailer_url);
     const videoId = trailerUrl.searchParams.get("v");
-
     if (!videoId) {
       console.warn("No se pudo obtener el ID del video de YouTube");
       return;
     }
 
-    // Convertir arrays a strings legibles
     const actores = pelicula.actores.map((a) => a.nombre).join(", ");
     const directores = pelicula.directores.map((d) => d.nombre).join(", ");
     const companias = pelicula.companias.map((c) => c.nombre).join(", ");
     const generos = pelicula.generos.map((g) => g.nombre).join(", ");
     const idiomas = pelicula.idiomas.map((i) => i.nombre).join(", ");
 
-    // Contenedor donde se inyectará el HTML
     const contenedor = document.getElementById("pelicula-aleatoria-container");
 
     contenedor.innerHTML = `
       <div class="video-container">
         <iframe
-          id="youtube-player"
+          id="main-youtube-player"
           src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0&controls=1"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen>
@@ -80,7 +84,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (err) {
     console.error("Error al cargar película aleatoria:", err);
   }
-});
+}
+
+function getYouTubeId(url) {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.searchParams.get("v") || "";
+  } catch (err) {
+    console.warn("URL de tráiler inválida:", url);
+    return "";
+  }
+}
+
 // Menú hamburguesa para móviles
 hamburger.addEventListener("click", () => {
   navLinks.classList.toggle("active");
@@ -120,29 +135,67 @@ const getPeliculasLanzamientos = async () => {
   }
 };
 
+const getTodasLasPeliculas = async () => {
+  try {
+    const response = await fetch(
+      "https://cinestream-backend.onrender.com/api/peliculas"
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Error al obtener todas las películas: ${response.status}`
+      );
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error al obtener todas las películas:", error);
+    return [];
+  }
+};
+
 // Cargar películas en las secciones
 async function loadMovies() {
-  const peliDestacadas = await getPeliculasDestacadas();
-  const peliLanzamientos = await getPeliculasLanzamientos();
-  // Películas destacadas
-  peliDestacadas.forEach((movie) => {
-    featuredMoviesContainer.appendChild(createMovieCard(movie));
-  });
+  try {
+    // Obtener datos
+    const peliDestacadas = await getPeliculasDestacadas();
+    const peliLanzamientos = await getPeliculasLanzamientos();
+    const todasPeliculasResponse = await getTodasLasPeliculas();
+    const todasPeliculas = todasPeliculasResponse.peliculas;
 
-  // Nuevos lanzamientos
-  peliLanzamientos.lanzamientos.forEach((movie) => {
-    newReleasesContainer.appendChild(createMovieCard(movie));
-  });
+    // Guardar en caché
+    cacheTodasLasPeliculas = todasPeliculas;
 
-  // Sacar ID del la URL del trailer para reproducirlo
-  function getYouTubeId(url) {
-    // Soporta URLs como https://www.youtube.com/watch?v=ID o https://youtu.be/ID
-    const regExp = /(?:youtube\.com\/.*v=|youtu\.be\/)([^&?/]+)/;
-    const match = url.match(regExp);
-    return match ? match[1] : url; // Si no es URL, asume que ya es el ID
+    // Limpiar contenedores antes de cargar
+    featuredMoviesContainer.innerHTML = "";
+    newReleasesContainer.innerHTML = "";
+    const featuredSecondaryContainer =
+      document.getElementById("featured-secondary");
+    featuredSecondaryContainer.innerHTML = "";
+
+    // Películas destacadas
+    peliDestacadas.forEach((movie) => {
+      featuredMoviesContainer.appendChild(createMovieCard(movie));
+    });
+
+    // Nuevos lanzamientos
+    peliLanzamientos.lanzamientos.forEach((movie) => {
+      newReleasesContainer.appendChild(createMovieCard(movie));
+    });
+
+    // Todas las películas
+    todasPeliculas.forEach((movie) => {
+      featuredSecondaryContainer.appendChild(createMovieCard(movie));
+    });
+
+    // Configurar eventos para los botones de tráiler
+    configurarEventosTrailer();
+  } catch (error) {
+    console.error("Error al cargar las películas:", error);
   }
+}
 
-  // Configurar eventos para los botones de tráiler
+//
+function configurarEventosTrailer() {
   document.querySelectorAll(".play-trailer").forEach((button) => {
     button.addEventListener("click", (e) => {
       const rawId =
@@ -150,7 +203,6 @@ async function loadMovies() {
         e.target.parentElement.getAttribute("data-id");
       const videoId = getYouTubeId(rawId);
 
-      // Mostrar modal de tráiler
       const modal = document.getElementById("trailer-modal");
       const iframe = document.getElementById("modal-youtube-player");
       iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
@@ -201,6 +253,7 @@ function createMovieCard(movie) {
             </div>
         </div>
     `;
+     observer.observe(card);
   return card;
 }
 
@@ -225,46 +278,75 @@ function showMovieModal(movie) {
   const modal = document.getElementById("movie-modal");
   const details = document.getElementById("modal-details");
 
-  const actores = movie.actores.map((a) => a.nombre).join(", ");
-  const directores = movie.directores.map((d) => d.nombre).join(", ");
-  const companias = movie.companias.map((c) => c.nombre).join(", ");
+  // Generar HTML con imagen_url para actores
+  const actoresHtml = movie.actores.map(a => `
+    <div class="persona">
+      <img src="${a.imagen_url}" alt="${a.nombre}" class="persona-img">
+      <p>${a.nombre}</p>
+      <small>${a.personaje ? 'como ' + a.personaje : ''}</small>
+    </div>
+  `).join("");
+
+  // Generar HTML con imagen_url para directores
+  const directoresHtml = movie.directores.map(d => `
+    <div class="persona">
+      <img src="${d.imagen_url}" alt="${d.nombre}" class="persona-img">
+      <p>${d.nombre}</p>
+    </div>
+  `).join("");
+
+  // Generar HTML con imagen_url para compañías
+  const companiasHtml = movie.companias.map(c => `
+    <div class="persona">
+      <img src="${c.imagen_url}" alt="${c.nombre}" class="persona-img">
+      <p>${c.nombre}</p>
+    </div>
+  `).join("");
+
   const generos = movie.generos.map((g) => g.nombre).join(", ");
   const idiomas = movie.idiomas.map((i) => i.nombre).join(", ");
 
   details.innerHTML = `
-        <img src="${movie.poster_url}" alt="${movie.titulo_espanol}">
-        <h2>${movie.titulo_espanol}</h2>
-        <div class="movie-meta">
-            <span><i class="fas fa-calendar"></i> ${
-              formatFecha(movie.fecha_estreno) || ""
-            }</span>
-            <span><i class="fas fa-star"></i> ${movie.calificacion}/10</span>
-            <span><i class="fas fa-film"></i> ${(movie.generos || [])
-              .map((g) => g.nombre)
-              .join(", ")}</span>
-        </div>
-        <p>${movie.descripcion || "Sinopsis:"}  ${movie.sinopsis}</p>
-        <div class="movie-meta">
-            <span><strong>Director:</strong> ${
-              directores || "Desconocido"
-            }</span>
-        </div>
-        <div class="movie-meta">
-            <span><strong>Reparto:</strong> ${actores || "Desconocido"}</span>
-        </div>
-          <div class="movie-meta">
-            <span><strong>Compañias:</strong> ${
-              companias || "Desconocido"
-            }</span>
-        </div>
-         <div class="movie-meta">
-            <span><strong>Generos::</strong> ${generos || "Desconocido"}</span>
-        </div>
-         <div class="movie-meta">
-            <span><strong>Idiomas:</strong> ${idiomas || "Desconocido"}</span>
-        </div> `;
+    <img src="${movie.poster_url}" alt="${movie.titulo_espanol}" class="poster-img">
+    <h2>${movie.titulo_espanol}</h2>
+    <div class="movie-meta">
+      <span><i class="fas fa-calendar"></i> ${
+        formatFecha(movie.fecha_estreno) || ""
+      }</span>
+      <span><i class="fas fa-star"></i> ${movie.calificacion}/10</span>
+      <span><i class="fas fa-film"></i> ${generos}</span>
+    </div>
+    <p>${movie.descripcion || "Sinopsis:"}  ${movie.sinopsis}</p>
+
+    <div class="movie-meta">
+      <h4>Director(es):</h4>
+      <div class="personas-container">${directoresHtml}</div>
+    </div>
+
+    <div class="movie-meta">
+      <h4>Reparto:</h4>
+      <div class="personas-container">${actoresHtml}</div>
+    </div>
+
+    <div class="movie-meta">
+      <h4>Compañías:</h4>
+      <div class="personas-container">${companiasHtml}</div>
+    </div>
+
+    <div class="movie-meta">
+      <h4>Idiomas:</h4>
+      <p>${idiomas}</p>
+    </div>
+
+      <div class="movie-meta">
+      <h4>Idiomas:</h4>
+      <p>${generos}</p>
+    </div>
+  `;
+
   modal.style.display = "block";
 }
+
 
 function closeMovieModal() {
   document.getElementById("movie-modal").style.display = "none";
@@ -276,16 +358,48 @@ document.addEventListener("keydown", function (e) {
 });
 
 // Búsqueda de películas
-searchButton.addEventListener("click", () => {
+searchInput.addEventListener("input", () => {
   const searchTerm = searchInput.value.trim().toLowerCase();
+  const todasPeliculas = cacheTodasLasPeliculas;
+
+  const featuredSecondaryContainer =
+    document.getElementById("featured-secondary");
+  featuredSecondaryContainer.innerHTML = ""; // Limpiar antes
+
   if (searchTerm) {
-    // En una implementación real, aquí se haría fetch a la API
-    alert(
-      `Búsqueda realizada: ${searchTerm}\nEsta funcionalidad se conectaría a una API real en producción.`
+    // Filtrar películas que coincidan con el término
+    const peliculasFiltradas = todasPeliculas.filter((pelicula) =>
+      pelicula.titulo_espanol.toLowerCase().includes(searchTerm)
     );
+
+    // Mostrar solo sección "Todas", ocultar otras
+    secciones.forEach((sec) => {
+      sec.style.display = sec === seccionTodas ? "block" : "none";
+    });
+    seccionReproductor.style.display = "none"; // Ocultar reproductor
+
+    // Mostrar películas filtradas
+    if (peliculasFiltradas.length > 0) {
+      peliculasFiltradas.forEach((movie) => {
+        const card = createMovieCard(movie);
+        featuredSecondaryContainer.appendChild(card);
+      });
+    } else {
+      featuredSecondaryContainer.innerHTML =
+        "<p>No se encontraron resultados.</p>";
+    }
   } else {
-    alert("Por favor ingresa un término de búsqueda");
+    // Mostrar todo desde la caché, sin recargar
+    secciones.forEach((sec) => (sec.style.display = "block"));
+    seccionReproductor.style.display = "block";
+
+    todasPeliculas.forEach((movie) => {
+      const card = createMovieCard(movie);
+      featuredSecondaryContainer.appendChild(card);
+    });
   }
+
+  configurarEventosTrailer(); // Siempre se llama
 });
 
 // Permitir búsqueda con Enter
@@ -309,10 +423,7 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, observerOptions);
 
-// Observar elementos que deben aparecer al hacer scroll
-document.querySelectorAll(".movie-card").forEach((card) => {
-  observer.observe(card);
-});
+
 
 function formatFecha(fecha) {
   if (!fecha) return "";
@@ -324,16 +435,22 @@ function formatFecha(fecha) {
 }
 
 // Cargar películas cuando el DOM esté listo
-document.addEventListener("DOMContentLoaded", loadMovies);
+document.addEventListener("DOMContentLoaded", async () => {
+  await cargarPeliculaAleatoria();
+  await loadMovies();
+});
 
 // Cerrar modal de tráiler al hacer clic en la "X" o fuera del contenido
-document.getElementById('trailer-modal').addEventListener('click', (e) => {
-  const modal = document.getElementById('trailer-modal');
-  const iframe = document.getElementById('modal-youtube-player');
+document.getElementById("trailer-modal").addEventListener("click", (e) => {
+  const modal = document.getElementById("trailer-modal");
+  const iframe = document.getElementById("modal-youtube-player");
 
   // Si clic fuera del contenido o en la "X"
-  if (e.target.id === 'trailer-modal' || e.target.classList.contains('close-trailer-modal')) {
-    iframe.src = ''; // Detener video
-    modal.style.display = 'none';
+  if (
+    e.target.id === "trailer-modal" ||
+    e.target.classList.contains("close-trailer-modal")
+  ) {
+    iframe.src = ""; // Detener video
+    modal.style.display = "none";
   }
 });
