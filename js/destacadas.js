@@ -1,7 +1,11 @@
 const apiDestacadas = "https://cinestream-backend.onrender.com/api/peliculas/recomendadas";
 
-// Obtener contenedor de películas destacadas
+let cachePeliculasDestacadas = [];
+
+// Obtener referencias a los elementos
 const featuredMoviesContainer = document.getElementById("featured-movies");
+const searchInput = document.getElementById("search-input");
+const searchButton = document.getElementById("search-button");
 
 // Función para crear una tarjeta de película destacada
 function createMovieCard(movie) {
@@ -35,12 +39,10 @@ function createMovieCard(movie) {
 }
 
 // Función para obtener y mostrar las películas destacadas
-// ...existing code...
-
 async function loadFeaturedMovies() {
     const loader = document.getElementById("featured-loader");
+
     try {
-        // Mostrar loader y ocultar grid
         if (loader) loader.style.display = "flex";
         featuredMoviesContainer.style.display = "none";
 
@@ -48,32 +50,12 @@ async function loadFeaturedMovies() {
         if (!response.ok) throw new Error("No se pudo obtener las películas destacadas");
         const movies = await response.json();
 
-        featuredMoviesContainer.innerHTML = ""; // Limpiar antes de renderizar
-        movies.forEach(movie => {
-            featuredMoviesContainer.appendChild(createMovieCard(movie));
-        });
+        cachePeliculasDestacadas = movies;
 
-        // Ocultar loader y mostrar grid
+        mostrarPeliculas(movies);
+
         if (loader) loader.style.display = "none";
         featuredMoviesContainer.style.display = "grid";
-
-        // ...eventos de botones...
-        document.querySelectorAll(".play-trailer").forEach(button => {
-            button.addEventListener("click", (e) => {
-                const rawId =
-                    e.target.getAttribute("data-id") ||
-                    e.target.parentElement.getAttribute("data-id");
-                const videoId = getYouTubeId(rawId);
-                showTrailerModal(videoId);
-            });
-        });
-
-        document.querySelectorAll(".details-btn").forEach(button => {
-            button.addEventListener("click", (e) => {
-                const movieId = e.currentTarget.getAttribute("data-id");
-                showMovieDetails(movieId);
-            });
-        });
 
     } catch (error) {
         if (loader) loader.style.display = "none";
@@ -81,7 +63,49 @@ async function loadFeaturedMovies() {
         featuredMoviesContainer.innerHTML = "<p>Error al cargar las películas destacadas.</p>";
         console.error(error);
     }
-};
+}
+
+// Función que imprime películas y asigna eventos
+function mostrarPeliculas(lista) {
+    featuredMoviesContainer.innerHTML = "";
+
+    if (lista.length === 0) {
+        featuredMoviesContainer.innerHTML = "<p>No se encontraron resultados.</p>";
+        return;
+    }
+
+    lista.forEach((movie) => {
+        featuredMoviesContainer.appendChild(createMovieCard(movie));
+    });
+
+    document.querySelectorAll(".play-trailer").forEach(button => {
+        button.addEventListener("click", (e) => {
+            const rawId =
+                e.target.getAttribute("data-id") ||
+                e.target.parentElement.getAttribute("data-id");
+            const videoId = getYouTubeId(rawId);
+            showTrailerModal(videoId);
+        });
+    });
+
+    document.querySelectorAll(".details-btn").forEach(button => {
+        button.addEventListener("click", (e) => {
+            const movieId = e.currentTarget.getAttribute("data-id");
+            showMovieDetails(movieId);
+        });
+    });
+}
+
+// Búsqueda de películas destacadas
+function filtrarDestacadas() {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+
+    const filtradas = cachePeliculasDestacadas.filter((pelicula) =>
+        pelicula.titulo_espanol.toLowerCase().includes(searchTerm)
+    );
+
+    mostrarPeliculas(filtradas);
+}
 
 // Extrae el ID de YouTube desde una URL
 function getYouTubeId(url) {
@@ -90,7 +114,7 @@ function getYouTubeId(url) {
     return match ? match[1] : url;
 }
 
-// Muestra el modal del tráiler (debes tener un modal en tu HTML)
+// Muestra el modal del tráiler
 function showTrailerModal(videoId) {
     const modal = document.getElementById("trailer-modal");
     const iframe = document.getElementById("modal-youtube-player");
@@ -98,13 +122,7 @@ function showTrailerModal(videoId) {
     modal.style.display = "flex";
 }
 
-// Ejemplo de función para mostrar detalles (puedes personalizarla)
-function showMovieDetails(movieId) {
-    // Aquí puedes abrir un modal o redirigir a una página de detalles
-    alert("Mostrar detalles de la película con ID: " + movieId);
-}
-
-// Cerrar el modal del tráiler
+// Cierra el modal del tráiler
 document.addEventListener("DOMContentLoaded", () => {
     loadFeaturedMovies();
 
@@ -117,4 +135,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    // Eventos de búsqueda
+    searchInput.addEventListener("input", filtrarDestacadas);
+    searchButton.addEventListener("click", filtrarDestacadas);
+    searchInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            filtrarDestacadas();
+        }
+    });
 });
+
+// Muestra detalles (puedes personalizarla)
+function showMovieDetails(movieId) {
+    alert("Mostrar detalles de la película con ID: " + movieId);
+}
