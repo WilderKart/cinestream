@@ -751,3 +751,14 @@ footer {
   height: 100%;
   border: none;
 }
+
+
+.movies-section {
+  transition: opacity 0.3s ease;
+}
+.movies-section.hidden {
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+}
