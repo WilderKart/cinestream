@@ -174,15 +174,16 @@ async function loadMovies() {
 
     // Películas destacadas
     // Barajar las películas destacadas
-    const peliDestacadasAleatorias = peliDestacadas.sort(() => Math.random() - 0.5);
+    const peliDestacadasAleatorias = peliDestacadas.sort(
+      () => Math.random() - 0.5
+    );
 
     // Tomar solo 4 películas aleatorias
     peliDestacadasAleatorias.slice(0, 4).forEach((movie) => {
       featuredMoviesContainer.appendChild(createMovieCard(movie));
     });
-    
-  
-      // Nuevos lanzamientos aleatorios (máximo 4)
+
+    // Nuevos lanzamientos aleatorios (máximo 4)
     const lanzamientosAleatorios = peliLanzamientos.lanzamientos
       .sort(() => Math.random() - 0.5)
       .slice(0, 4);
@@ -199,7 +200,6 @@ async function loadMovies() {
     todasAleatorias.forEach((movie) => {
       featuredSecondaryContainer.appendChild(createMovieCard(movie));
     });
-
 
     // Configurar eventos para los botones de tráiler
     configurarEventosTrailer();
@@ -395,9 +395,18 @@ searchInput.addEventListener("input", () => {
 
   if (searchTerm) {
     // Filtrar películas que coincidan con el término
-    const peliculasFiltradas = todasPeliculas.filter((pelicula) =>
-      pelicula.titulo_espanol.toLowerCase().includes(searchTerm)
-    );
+    const peliculasFiltradas = todasPeliculas.filter((pelicula) => {
+      const titulo = pelicula.titulo_espanol?.toLowerCase() || "";
+      const generos =
+        pelicula.generos?.map((g) => g.nombre.toLowerCase()).join(", ") || "";
+      const anio = new Date(pelicula.fecha_estreno).getFullYear().toString();
+
+      return (
+        titulo.includes(searchTerm) ||
+        generos.includes(searchTerm) ||
+        anio.includes(searchTerm)
+      );
+    });
 
     // Mostrar solo sección "Todas", ocultar otras
     secciones.forEach((sec) => {

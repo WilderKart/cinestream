@@ -39,20 +39,36 @@ function createMovieCard(movie) {
 }
 
 // Función para obtener y mostrar las películas destacadas
-async function loadFeaturedMovies() {
+async function loadFeaturedMovies(forzarRecarga = false) {
     const loader = document.getElementById("featured-loader");
 
     try {
         if (loader) loader.style.display = "flex";
         featuredMoviesContainer.style.display = "none";
 
-        const response = await fetch(apiDestacadas);
-        if (!response.ok) throw new Error("No se pudo obtener las películas destacadas");
-        const movies = await response.json();
+        const cacheKey = "destacadasCache";
+        const cacheTimeKey = "destacadasCacheTime";
+        const cached = localStorage.getItem(cacheKey);
+        const cachedTime = localStorage.getItem(cacheTimeKey);
+        const now = Date.now();
+        const cacheValido = cached && cachedTime && (now - cachedTime) < 5 * 60 * 1000; // 5 minutos
 
-        cachePeliculasDestacadas = movies;
+        if (cacheValido && !forzarRecarga) {
+            cachePeliculasDestacadas = JSON.parse(cached);
+            mostrarPeliculas(cachePeliculasDestacadas);
+        } else {
+            const response = await fetch(apiDestacadas);
+            if (!response.ok) throw new Error("No se pudo obtener las películas destacadas");
+            const movies = await response.json();
 
-        mostrarPeliculas(movies);
+            cachePeliculasDestacadas = movies;
+
+            // Guardar en cache
+            localStorage.setItem(cacheKey, JSON.stringify(movies));
+            localStorage.setItem(cacheTimeKey, now.toString());
+
+            mostrarPeliculas(movies);
+        }
 
         if (loader) loader.style.display = "none";
         featuredMoviesContainer.style.display = "grid";
@@ -61,9 +77,10 @@ async function loadFeaturedMovies() {
         if (loader) loader.style.display = "none";
         featuredMoviesContainer.style.display = "block";
         featuredMoviesContainer.innerHTML = "<p>Error al cargar las películas destacadas.</p>";
-        console.error(error);
+        console.error("Error al cargar destacadas:", error);
     }
 }
+
 
 // Función que imprime películas y asigna eventos
 function mostrarPeliculas(lista) {
@@ -100,12 +117,27 @@ function mostrarPeliculas(lista) {
 function filtrarDestacadas() {
     const searchTerm = searchInput.value.trim().toLowerCase();
 
-    const filtradas = cachePeliculasDestacadas.filter((pelicula) =>
-        pelicula.titulo_espanol.toLowerCase().includes(searchTerm)
-    );
+    if (!searchTerm) {
+        // Si no hay búsqueda, muestra todo
+        mostrarPeliculas(cachePeliculasDestacadas);
+        return;
+    }
+
+    const filtradas = cachePeliculasDestacadas.filter(pelicula => {
+        const titulo = pelicula.titulo_espanol?.toLowerCase() || "";
+        const generos = pelicula.generos?.map(g => g.nombre.toLowerCase()).join(", ") || "";
+        const anio = new Date(pelicula.fecha_estreno).getFullYear().toString();
+
+        return (
+            titulo.includes(searchTerm) ||
+            generos.includes(searchTerm) ||
+            anio.includes(searchTerm)
+        );
+    });
 
     mostrarPeliculas(filtradas);
 }
+
 
 // Extrae el ID de YouTube desde una URL
 function getYouTubeId(url) {
