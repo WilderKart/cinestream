@@ -125,14 +125,6 @@ header {
   padding: 15px 0;
 }
 
-/* Asegurar que navbar distribuya los elementos correctamente */
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
 /* Centrar el menú de navegación */
 .nav-links {
   display: flex;
@@ -241,11 +233,6 @@ header {
 
 .logo span {
   color: var(--light);
-}
-
-.nav-links {
-  display: flex;
-  list-style: none;
 }
 
 .nav-links li {
