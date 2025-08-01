@@ -278,46 +278,75 @@ function showMovieModal(movie) {
   const modal = document.getElementById("movie-modal");
   const details = document.getElementById("modal-details");
 
-  const actores = movie.actores.map((a) => a.nombre).join(", ");
-  const directores = movie.directores.map((d) => d.nombre).join(", ");
-  const companias = movie.companias.map((c) => c.nombre).join(", ");
+  // Generar HTML con imagen_url para actores
+  const actoresHtml = movie.actores.map(a => `
+    <div class="persona">
+      <img src="${a.imagen_url}" alt="${a.nombre}" class="persona-img">
+      <p>${a.nombre}</p>
+      <small>${a.personaje ? 'como ' + a.personaje : ''}</small>
+    </div>
+  `).join("");
+
+  // Generar HTML con imagen_url para directores
+  const directoresHtml = movie.directores.map(d => `
+    <div class="persona">
+      <img src="${d.imagen_url}" alt="${d.nombre}" class="persona-img">
+      <p>${d.nombre}</p>
+    </div>
+  `).join("");
+
+  // Generar HTML con imagen_url para compañías
+  const companiasHtml = movie.companias.map(c => `
+    <div class="persona">
+      <img src="${c.imagen_url}" alt="${c.nombre}" class="persona-img">
+      <p>${c.nombre}</p>
+    </div>
+  `).join("");
+
   const generos = movie.generos.map((g) => g.nombre).join(", ");
   const idiomas = movie.idiomas.map((i) => i.nombre).join(", ");
 
   details.innerHTML = `
-        <img src="${movie.poster_url}" alt="${movie.titulo_espanol}">
-        <h2>${movie.titulo_espanol}</h2>
-        <div class="movie-meta">
-            <span><i class="fas fa-calendar"></i> ${
-              formatFecha(movie.fecha_estreno) || ""
-            }</span>
-            <span><i class="fas fa-star"></i> ${movie.calificacion}/10</span>
-            <span><i class="fas fa-film"></i> ${(movie.generos || [])
-              .map((g) => g.nombre)
-              .join(", ")}</span>
-        </div>
-        <p>${movie.descripcion || "Sinopsis:"}  ${movie.sinopsis}</p>
-        <div class="movie-meta">
-            <span><strong>Director:</strong> ${
-              directores || "Desconocido"
-            }</span>
-        </div>
-        <div class="movie-meta">
-            <span><strong>Reparto:</strong> ${actores || "Desconocido"}</span>
-        </div>
-          <div class="movie-meta">
-            <span><strong>Compañias:</strong> ${
-              companias || "Desconocido"
-            }</span>
-        </div>
-         <div class="movie-meta">
-            <span><strong>Generos::</strong> ${generos || "Desconocido"}</span>
-        </div>
-         <div class="movie-meta">
-            <span><strong>Idiomas:</strong> ${idiomas || "Desconocido"}</span>
-        </div> `;
+    <img src="${movie.poster_url}" alt="${movie.titulo_espanol}" class="poster-img">
+    <h2>${movie.titulo_espanol}</h2>
+    <div class="movie-meta">
+      <span><i class="fas fa-calendar"></i> ${
+        formatFecha(movie.fecha_estreno) || ""
+      }</span>
+      <span><i class="fas fa-star"></i> ${movie.calificacion}/10</span>
+      <span><i class="fas fa-film"></i> ${generos}</span>
+    </div>
+    <p>${movie.descripcion || "Sinopsis:"}  ${movie.sinopsis}</p>
+
+    <div class="movie-meta">
+      <h4>Director(es):</h4>
+      <div class="personas-container">${directoresHtml}</div>
+    </div>
+
+    <div class="movie-meta">
+      <h4>Reparto:</h4>
+      <div class="personas-container">${actoresHtml}</div>
+    </div>
+
+    <div class="movie-meta">
+      <h4>Compañías:</h4>
+      <div class="personas-container">${companiasHtml}</div>
+    </div>
+
+    <div class="movie-meta">
+      <h4>Idiomas:</h4>
+      <p>${idiomas}</p>
+    </div>
+
+      <div class="movie-meta">
+      <h4>Idiomas:</h4>
+      <p>${generos}</p>
+    </div>
+  `;
+
   modal.style.display = "block";
 }
+
 
 function closeMovieModal() {
   document.getElementById("movie-modal").style.display = "none";
